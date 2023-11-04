@@ -23,7 +23,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         script: |
-          killall node
+          sudo killall node
           cd /home/ubuntu/attendEase-Api
           git pull origin main
           git status
