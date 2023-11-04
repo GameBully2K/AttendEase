@@ -27,5 +27,5 @@ jobs:
           cd /home/github/attendEase-Api
           git pull origin main
           git status
-          nohup npm start &
+          nohup npm start > /dev/null 2>&1 &
       background: true
