@@ -19,6 +19,12 @@ app.listen(
     () => console.log("API is Runnig")
 )
 
+app.get('/', (req, res) => {
+    res.status(200).send({
+        API: "working"
+    })
+})
+
 app.get('/checkTime', (req, res) => {
     res.status(200).send({
         time: time
