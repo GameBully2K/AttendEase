@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/GameBully2K/AttendEase/issues"
   },
-  "homepage": "https://github.com/GameBully2K/AttendEase#readme"
+  "homepage": "https://github.com/GameBully2K/AttendEase#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
