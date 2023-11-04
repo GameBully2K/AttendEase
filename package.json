@@ -1,0 +1,27 @@
+{
+  "name": "attendease",
+  "version": "1.0.0",
+  "description": "An RFID based presence monitoring software boosted with AI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GameBully2K/AttendEase.git"
+  },
+  "keywords": [
+    "RFID",
+    "AI",
+    "Image",
+    "Recognition",
+    "Embedded",
+    "systems"
+  ],
+  "author": "2023/2025 IMMERSIVE TECHNOLOGIE MASTER STUDENTS (ENSIAS)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GameBully2K/AttendEase/issues"
+  },
+  "homepage": "https://github.com/GameBully2K/AttendEase#readme"
+}
