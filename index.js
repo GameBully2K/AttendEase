@@ -33,6 +33,6 @@ app.get('/checkTime', (req, res) => {
 
 app.get('/checkDep', (req, res) => {
     res.status(200).send({
-        Dep: 'ok'
+        Dep: "ok"
     })
 })
