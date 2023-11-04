@@ -31,8 +31,8 @@ app.get('/checkTime', (req, res) => {
     })
 })
 
-app.get('/checkDep', (req, res) => {
+app.get('/checkDeploy', (req, res) => {
     res.status(200).send({
-        Dep: "ok"
+        Deploy: "ok"
     })
 })
