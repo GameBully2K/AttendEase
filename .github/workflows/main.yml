@@ -25,6 +25,6 @@ jobs:
         script: |
           killall node
           cd /home/ubuntu/attendEase-Api
-          git pull origin mainapi
+          git pull origin main
           git status
-          npm start
+          npm start &
