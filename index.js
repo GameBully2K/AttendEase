@@ -6,8 +6,8 @@ const time = date.getHours() + " : " + date.getMinutes();
 const PORT = 443;
 
 const options = {
-    key: fs.readFileSync('certs/key.key'),
-    cert: fs.readFileSync('certs/cert.pem')
+    key: fs.readFileSync('./certs/key.key'),
+    cert: fs.readFileSync('./certs/cert.pem')
 };
 
 const app = express();
