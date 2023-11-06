@@ -1,9 +1,11 @@
+const dotenv = require('dotenv').config();
 const express = require('express');
 const https = require('https');
 const fs = require('fs');
 const date = new Date();
 const time = date.getHours() + " : " + date.getMinutes();
-const PORT = 3000;
+const TOKEN = process.env.TOKEN
+const PORT = process.env.PORT || 3000;
 
 const options = {
     key: fs.readFileSync('./certs/key.key'),
