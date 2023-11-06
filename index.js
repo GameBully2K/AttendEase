@@ -3,7 +3,7 @@ const https = require('https');
 const fs = require('fs');
 const date = new Date();
 const time = date.getHours() + " : " + date.getMinutes();
-const PORT = 8443;
+const PORT = 3000;
 
 const options = {
     key: fs.readFileSync('./certs/key.key'),
