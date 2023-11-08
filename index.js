@@ -38,3 +38,9 @@ app.get('/checkDeploy', (req, res) => {
         Deploy: "ok"
     })
 })
+
+app.get('/checkTeam', (req, res) => {
+    res.status(200).send({
+        team: "ok"
+    })
+})
