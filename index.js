@@ -23,9 +23,9 @@ app.listen(
 
 app.get('/', (req, res) => {
     res.status(200).send({
-        API: "working",
-        Connection: "Secured",
-        Name: "Attendora",
+        API: "working\\n",
+        Connection: "Secured\\n",
+        Name: "Attendora\\n",
         version: "0.1.1"
     })
 })
