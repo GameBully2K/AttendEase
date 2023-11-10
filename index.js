@@ -23,7 +23,10 @@ app.listen(
 
 app.get('/', (req, res) => {
     res.status(200).send({
-        API: "working"
+        API: "working",
+        Connection: "Secured",
+        Name: Attendora,
+        version: "0.1.1"
     })
 })
 
