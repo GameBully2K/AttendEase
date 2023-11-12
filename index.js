@@ -32,6 +32,7 @@ app.get('/checkTime', (req, res) => {
     const date = new Date();
     var hour = date.getHours();
     hour++;
+    hour = hour%24;
     const time = hour + " : " + date.getMinutes();
     res.status(200).send({
         time: time
