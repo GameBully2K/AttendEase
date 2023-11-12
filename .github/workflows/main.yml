@@ -23,9 +23,8 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         script: |
-          killall node
-          cd /home/github/attendEase-Api
+          sudo killall node
+          cd /home/github/attendora-Api
           git pull origin main
           git status
-          npm i
           nohup npm start > /dev/null 2>&1 &
