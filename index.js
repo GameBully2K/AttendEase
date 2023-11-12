@@ -2,8 +2,6 @@ const dotenv = require('dotenv').config();
 const express = require('express');
 const https = require('https');
 const fs = require('fs');
-const date = new Date();
-const time = date.getHours() + " : " + date.getMinutes();
 const TOKEN = process.env.TOKEN
 const PORT = process.env.PORT || 3000;
 
@@ -31,6 +29,8 @@ app.get('/', (req, res) => {
 })
 
 app.get('/checkTime', (req, res) => {
+    const date = new Date();   
+    const time = date.getHours() + " : " + date.getMinutes();
     res.status(200).send({
         time: time
     })
