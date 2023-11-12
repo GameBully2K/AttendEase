@@ -14,12 +14,12 @@ const options = {
 
 const app = express();
 
+const server = https.createServer(options, app);
+
 app.listen(
     PORT,
     () => console.log("API is Runnig")
 )
-
-const server = https.createServer(options, app);
 
 app.get('/', (req, res) => {
     res.status(200).send({
