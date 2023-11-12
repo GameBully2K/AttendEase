@@ -29,8 +29,9 @@ app.get('/', (req, res) => {
 })
 
 app.get('/checkTime', (req, res) => {
-    const date = new Date();   
-    const time = date.getHours() + " : " + date.getMinutes();
+    const date = new Date();
+    const hour = date.getHours()+1;
+    const time = hour + " : " + date.getMinutes();
     res.status(200).send({
         time: time
     })
