@@ -30,7 +30,8 @@ app.get('/', (req, res) => {
 
 app.get('/checkTime', (req, res) => {
     const date = new Date();
-    const hour = date.getHours()+1;
+    var hour = date.getHours();
+    hour++;
     const time = hour + " : " + date.getMinutes();
     res.status(200).send({
         time: time
