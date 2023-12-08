@@ -17,7 +17,7 @@ const server = https.createServer(options, app);
 app.listen(
     PORT,
     () => console.log("API is Runnig")
-)
+);
 
 app.get('/', (req, res) => {
     res.status(200).send({
