@@ -25,6 +25,22 @@ app.post('/token', (req, res) => {
   })
 })
 
+app.post('/signup', async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    const user = { name: req.body.name, password: hashedPassword }
+    users.push(user)
+    res.status(201).send(
+      {
+          "status" : "ok"
+      }
+    )
+  } catch (err) {
+    res.status(500).send()
+    console.log(err) 
+  }
+})
+
 app.delete('/logout', (req, res) => {
   refreshTokens = refreshTokens.filter(token => token !== req.body.token)
   res.sendStatus(204)
