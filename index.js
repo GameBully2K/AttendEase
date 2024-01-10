@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 function getHours() {
   const date = new Date();
   var hour = date.getHours();
-  //hour++;
+  //hour++
   hour = hour%24;
   return hour;
 }
@@ -69,20 +69,22 @@ app.get('/', (req, res) => {
     })
 })
 
-app.post('/getstudent', async (req, res)  => {
+app.post('/getstudents', async (req, res)  => {
   let firstname = "";
   let lastname = "";
   try {
-    const result = await conn.promise().query('select Nom_etd, Prenom_etd from Etudiant where NumeroCarteRFID = "'+req.body.studentId+'"');
+    const result = await conn.promise().query('select NumeroCarteRFID from Etudiant where filiere = "'+req.body.studentId+'"');
     firstname = result[0][0].Prenom_etd;
     lastname = result[0][0].Nom_etd;
-  } catch (err) {
-    console.log(err);
-  };
-  res.status(200).send({
+    res.status(200).send({
       prenom: firstname,
       nom: lastname
-  })
+    })
+    console.log("GetStudent Called, status ok ✅");
+  } catch (err) {
+    console.log(err);
+    
+  };
 })
 
 app.get('/checkTime', /*authenticateToken,*/ (req, res) => {
@@ -104,13 +106,18 @@ app.post('/createSession', async (req, res) => {
   emploiId++;
   let result = await conn.promise().query('INSERT INTO Seance (Type, Emploi, Enseignant, Salle) VALUES ("Normal", '+teacherId+', '+emploiId+', "'+salle+'")');
   let elementName = await conn.promise().query('Select * from Emploi where ID_emp = '+emploiId+'');
+  let filiereName = elementName[0][0].filiere;
   elementName = await conn.promise().query('SELECT * from Element where ID_elm = '+elementName[0][0].Element+'');
   res.status(200).send({
     sessionId: result[0].insertId,
-    Element: elementName[0][0].Nom_elm,
+    Element: elementName[0][0].Abreviation,
     teacherName: teacherName,
-    salle: salle
+    salle: salle,
+    filiere : filiereName
   })
+  console.log(elementName[0][0].Abreviation);
+  
+  console.log("createSession Called, status ok ✅");
 })
 
 app.post('/makeAbsent', async (req, res) => {
@@ -130,6 +137,7 @@ app.post('/makeAbsent', async (req, res) => {
       prenom: firstname,
       nom: lastname
     })
+    console.log("makeAbsent Called, status ok ✅");
   } catch (err) {
     console.log(err);
   };
