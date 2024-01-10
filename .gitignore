@@ -1,6 +1,5 @@
 #Personal Certificates
-certs/cert.pem
-certs/key.key
+certs/*.*
 
 # Logs
 logs
