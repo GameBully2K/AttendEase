@@ -46,8 +46,8 @@ const conn = mysql.createConnection({
 console.log("Connected to database"));
 
 const options = {
-    key: fs.readFileSync('./certs/key.key'),
-    cert: fs.readFileSync('./certs/cert.pem')
+    key: fs.readFileSync('./certs/localhost.key'),
+    cert: fs.readFileSync('./certs/localhost.crt')
 };
 
 const app = express();
@@ -55,10 +55,11 @@ app.use(express.json());
 
 //const server = https.createServer(options, app);
 
+
 app.listen(
     PORT,
     () => console.log("API is Runnig")
-)
+);
 
 app.get('/', (req, res) => {
     res.status(200).send({
@@ -175,3 +176,4 @@ app.post('/makeAbsent', async (req, res) => {
     }
     return hours.indexOf(Math.min(...hours))
   }
+
