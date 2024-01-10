@@ -6,8 +6,8 @@ const TOKEN = process.env.TOKEN
 const PORT = process.env.PORT || 3000;
 
 const options = {
-    key: fs.readFileSync('./certs/key.key'),
-    cert: fs.readFileSync('./certs/cert.pem')
+    key: fs.readFileSync('./certs/localhost.key'),
+    cert: fs.readFileSync('./certs/localhost.crt')
 };
 
 const app = express();
