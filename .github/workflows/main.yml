@@ -28,3 +28,4 @@ jobs:
           git pull origin main
           git status
           nohup npm start > /dev/null 2>&1 &
+          sudo nginx -s reload
