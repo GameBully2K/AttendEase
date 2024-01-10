@@ -1,0 +1,4 @@
+lines to uncomment :
+    -weekday in determineemploi
+    -float time in determine emploi
+    -hour++ in get hours
