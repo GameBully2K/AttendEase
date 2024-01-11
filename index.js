@@ -116,7 +116,6 @@ app.post('/createSession', async (req, res) => {
     salle: salle,
     filiere : filiereName
   })
-  console.log(elementName[0][0].Abreviation);
   
   console.log("createSession Called, status ok ✅");
 })
