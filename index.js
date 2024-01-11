@@ -47,7 +47,7 @@ console.log("Connected to database"));
 
 const options = {
     key: fs.readFileSync('./certs/localhost.key'),
-    cert: fs.readFileSync('./certs/localhost.crt')
+    cert: fs.readFileSync('./certs/localhost.pem')
 };
 
 const app = express();
