@@ -38,7 +38,7 @@ conn.query('INSERT INTO Arduino (Numero, Password, Salle, Active) VALUES (111, "
 });
 }
 
-insertArduino();
+//insertArduino();
 
 conn.query('Select * from Emploi where Jour = "Vendredi"', function(err, res) {
   let splitedTime =  res[0].HeureDebut.split(":")

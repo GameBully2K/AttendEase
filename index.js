@@ -3,6 +3,10 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const https = require('https');
 const fs = require('fs');
+'use strict';
+const mysql = require('mysql2');
+
+
 const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
 const refreshToken = process.env.REFRESH_TOKEN_SECRET;
 const PORT = process.env.PORT || 3000;
@@ -28,8 +32,6 @@ function getDay() {
 //----------------------------------------------
 // Database connection
 //----------------------------------------------
-'use strict';
-const mysql = require('mysql2');
 
 const conn = mysql.createConnection({
   user: process.env.DB_USER,
@@ -71,16 +73,17 @@ app.get('/', (req, res) => {
 })
 
 app.post('/getstudents', async (req, res)  => {
-  let firstname = "";
-  let lastname = "";
   try {
-    const result = await conn.promise().query('select NumeroCarteRFID from Etudiant where filiere = "'+req.body.studentId+'"');
-    firstname = result[0][0].Prenom_etd;
-    lastname = result[0][0].Nom_etd;
-    res.status(200).send({
-      prenom: firstname,
-      nom: lastname
-    })
+    console.log("calling getstudents...");
+    const result = await conn.promise().query('select NumeroCarteRFID from Etudiant where filiere = "'+req.body.filiere+'"');
+    console.log(result[0]);
+    let list = {
+      count:result[0].length
+    };
+    for (let i = 0; i < result[0].length; i++) {
+      list = {...list, [result[0][i].NumeroCarteRFID]: 1}
+    } 
+    res.status(200).send(list)
     console.log("GetStudent Called, status ok ✅");
   } catch (err) {
     console.log(err);
