@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3000;
 function getHours() {
   const date = new Date();
   var hour = date.getHours();
-  //hour++
+  hour++
   hour = hour%24;
   return hour;
 }
