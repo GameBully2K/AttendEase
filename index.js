@@ -81,7 +81,7 @@ app.post('/getstudents', async (req, res)  => {
       count:result[0].length
     };
     for (let i = 0; i < result[0].length; i++) {
-      list = {...list, [result[0][i].NumeroCarteRFID]: 1}
+      list = {...list, [result[0][i].NumeroCarteRFID]: 0}
     } 
     res.status(200).send(list)
     console.log("GetStudent Called, status ok ✅");
@@ -123,22 +123,26 @@ app.post('/createSession', async (req, res) => {
   console.log("createSession Called, status ok ✅");
 })
 
-app.post('/makeAbsent', async (req, res) => {
-  let firstname = "";
-  let lastname = "";
+app.post('/markAbsent', async (req, res) => {
   try {
-    const result = await conn.promise().query('select Nom_etd, Prenom_etd from Etudiant where NumeroCarteRFID = "'+req.body.studentRFID+'"');
-    firstname = result[0][0].Prenom_etd;
-    lastname = result[0][0].Nom_etd;
-    let studentRFID = req.body.studentRFID;
-    let studentId = await conn.promise().query('select IDetudiant from Etudiant where NumeroCarteRFID = "'+studentRFID+'"');
-    studentId = studentId[0][0].IDetudiant;
-    let sessionId = req.body.sessionId;
-    let resulta = await conn.promise().query('INSERT INTO Absence (Etudiant, Seance) VALUES ("'+studentId+'", '+sessionId+')');
+    console.log("calling makeAbsent...");
+    const absentRFIDs = Object.keys(req.body).filter(key => req.body[key] === 0);
+    
+    // for (let i = 0; i < absentRFIDs.length; i++) {
+    //   const studentRFID = absentRFIDs[i];
+    //   const studentId = await conn.promise().query('SELECT IDetudiant FROM Etudiant WHERE NumeroCarteRFID = "' + studentRFID + '"');
+    //   const sessionId = req.body.sessionId;
+    //   await conn.promise().query('INSERT INTO Absence (Etudiant, Seance) VALUES ("' + studentId[0][0].IDetudiant + '", ' + sessionId + ')');
+    // }
+    const sessionId = parseInt(req.body.sessionId);
+    const insertQuery = ` INSERT INTO Absence (Etudiant, Seance)
+  SELECT IDetudiant, ? AS Seance FROM Etudiant
+    WHERE NumeroCarteRFID IN (?); `;
+
+    await conn.promise().query(insertQuery, [sessionId, absentRFIDs]);
+    
     res.status(200).send({
-      status: "Marked",
-      prenom: firstname,
-      nom: lastname
+      status: "1"
     })
     console.log("makeAbsent Called, status ok ✅");
   } catch (err) {
