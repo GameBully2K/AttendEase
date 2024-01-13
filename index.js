@@ -120,7 +120,7 @@ app.post('/createSession', async (req, res) => {
     filiere : filiereName
   })
   
-  console.log("createSession Called, status ok ✅");
+  console.log("createSession Called: status ok ✅");
 })
 
 app.post('/markAbsent', async (req, res) => {
@@ -144,7 +144,7 @@ app.post('/markAbsent', async (req, res) => {
     res.status(200).send({
       status: "1"
     })
-    console.log("makeAbsent Called, status ok ✅");
+    console.log("makeAbsent Called: status ok ✅");
   } catch (err) {
     console.log(err);
   };
