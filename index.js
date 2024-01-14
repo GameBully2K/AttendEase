@@ -128,18 +128,18 @@ app.post('/markAbsent', async (req, res) => {
     console.log("calling makeAbsent...")
     const absentRFIDs = Object.keys(req.body).filter(key => req.body[key] === 0)
 
-    for (let i = 0; i < absentRFIDs.length; i++) {
-      const studentRFID = absentRFIDs[i];
-      const studentId = await conn.promise().query('SELECT IDetudiant FROM Etudiant WHERE NumeroCarteRFID = "' + studentRFID + '"');
-      const sessionId = req.body.sessionId;
-      await conn.promise().query('INSERT INTO Absence (Etudiant, Seance) VALUES ("' + studentId[0][0].IDetudiant + '", ' + sessionId + ')');
-    }
-    // const sessionId = parseInt(req.body.sessionId);
-    // const insertQuery = `INSERT INTO Absence (Etudiant, Seance)
-    //   SELECT IDetudiant, ? AS Seance FROM Etudiant
-    //   WHERE NumeroCarteRFID IN (?)`;
+    // for (let i = 0; i < absentRFIDs.length; i++) {
+    //   const studentRFID = absentRFIDs[i];
+    //   const studentId = await conn.promise().query('SELECT IDetudiant FROM Etudiant WHERE NumeroCarteRFID = "' + studentRFID + '"');
+    //   const sessionId = req.body.sessionId;
+    //   await conn.promise().query('INSERT INTO Absence (Etudiant, Seance) VALUES ("' + studentId[0][0].IDetudiant + '", ' + sessionId + ')');
+    // }
+    const sessionId = parseInt(req.body.sessionId);
+    const insertQuery = `INSERT INTO Absence (Etudiant, Seance)
+      SELECT IDetudiant, ? AS Seance FROM Etudiant
+      WHERE NumeroCarteRFID IN (?)`;
 
-    // await conn.promise().query(insertQuery, [sessionId, absentRFIDs]);
+    await conn.promise().query(insertQuery, [sessionId, absentRFIDs]);
     
     res.status(200).send({
       status: "1"
