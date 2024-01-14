@@ -124,8 +124,8 @@ app.post('/createSession', async (req, res) => {
 
 app.post('/markAbsent', async (req, res) => {
   try {
-    console.log("calling makeAbsent...")
-    const absentRFIDs = Object.keys(req.body).filter(key => req.body[key] === 0)
+    console.log("calling makeAbsent...");
+    const absentRFIDs = Object.keys(req.body).filter(key => req.body[key] === 0);
 
     // for (let i = 0; i < absentRFIDs.length; i++) {
     //   const studentRFID = absentRFIDs[i];
@@ -138,12 +138,20 @@ app.post('/markAbsent', async (req, res) => {
       SELECT IDetudiant, ? AS Seance FROM Etudiant
       WHERE NumeroCarteRFID IN (?)`;
 
-    await conn.promise().query(insertQuery, [sessionId, absentRFIDs]);
-    
-    res.status(200).send({
-      status: "1"
-    })
-    console.log("makeAbsent Called: status ok ✅");
+    if (absentRFIDs.length === 0) {
+      res.status(200).send({
+        status: "2"
+      })
+      console.log("makeAbsent Called: status ok ✅");
+      return;
+    } else {
+          await conn.promise().query(insertQuery, [sessionId, absentRFIDs]);
+        
+        res.status(200).send({
+          status: "1"
+        })
+        console.log("makeAbsent Called: status ok ✅");
+    }
   } catch (err) {
     console.log(err);
   };
