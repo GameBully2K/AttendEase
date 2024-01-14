@@ -17,8 +17,7 @@ function getHours() {
   const date = new Date();
   var hour = date.getHours();
   hour++
-  hour = hour%24;
-  return hour;
+  return hour%24;
 }
 function getMinutes() {
     const date = new Date();
