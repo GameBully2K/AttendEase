@@ -137,7 +137,7 @@ app.post('/markAbsent', async (req, res) => {
     const insertQuery = `INSERT INTO Absence (Etudiant, Seance)
       SELECT IDetudiant, ? AS Seance FROM Etudiant
       WHERE NumeroCarteRFID IN (?)`;
-      
+
 
     if (absentRFIDs.length === 0) {
       res.status(200).send({
@@ -157,6 +157,30 @@ app.post('/markAbsent', async (req, res) => {
     console.log(err);
   };
 
+})
+
+app.post('/teachersSession', async (req, res) => {
+  try {
+    console.log("calling teachersSession...");
+    const teacherId = parseInt(req.body.teacherId);
+    const result = await conn.promise().query('SELECT * FROM Seance WHERE Enseignant = ' + teacherId);
+    res.status(200).send(result[0]);
+    console.log("teachersSession Called: status ok ✅");
+  } catch (err) {
+    console.log(err);
+  };
+})
+
+app.post('/teachersSessionCount', async (req, res) => {
+  try {
+    console.log("calling teachersSessionCount...");
+    const teacherId = req.body.teacherId;
+    const result = await conn.promise().query('SELECT COUNT(*) AS count FROM Seance WHERE Enseignant = ' + teacherId + ' AND Type = "Normal"');
+    res.status(200).send(result[0]);
+    console.log("teachersSessionCount Called: status ok ✅");
+  } catch (err) {
+    console.log(err);
+  };
 })
 
 
