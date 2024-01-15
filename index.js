@@ -137,6 +137,7 @@ app.post('/markAbsent', async (req, res) => {
     const insertQuery = `INSERT INTO Absence (Etudiant, Seance)
       SELECT IDetudiant, ? AS Seance FROM Etudiant
       WHERE NumeroCarteRFID IN (?)`;
+      
 
     if (absentRFIDs.length === 0) {
       res.status(200).send({
