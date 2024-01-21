@@ -176,7 +176,7 @@ app.post('/teachersSessionCount', async (req, res) => {
     console.log("calling teachersSessionCount...");
     const teacherId = req.body.teacherId;
     const result = await conn.promise().query('SELECT COUNT(*) AS count FROM Seance WHERE Enseignant = ' + teacherId + ' AND Type = "Normal"');
-    res.status(200).send(result[0]);
+    res.status(200).send(result[0][0]);
     console.log("teachersSessionCount Called: status ok ✅");
   } catch (err) {
     console.log(err);
