@@ -1,5 +1,6 @@
 const dotenv = require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const https = require('https');
 const fs = require('fs');
@@ -53,6 +54,7 @@ const options = {
 
 const app = express();
 app.use(express.json());
+app.use(cors({ origin: '*' }));
 
 const server = https.createServer(options, app);
 
