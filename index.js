@@ -3,9 +3,9 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const https = require('https');
 const fs = require('fs');
+
 'use strict';
 const mysql = require('mysql2');
-
 
 const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
 const refreshToken = process.env.REFRESH_TOKEN_SECRET;
