@@ -32,11 +32,12 @@ function getDay() {
 // Database connection
 //----------------------------------------------
 
-const conn = mysql.createConnection({
+const conn = mysql.createPool({
+  connectionLimit: 10, // Adjust as necessary
+  host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   ssl: {
     key: fs.readFileSync(process.env.DB_SSL_KEY),
@@ -54,7 +55,7 @@ const options = {
 const app = express();
 app.use(express.json());
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.header('Access-Control-Allow-Origin', '*');
   res.header(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept'
