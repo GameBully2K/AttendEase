@@ -12,7 +12,7 @@ const jwt = require('jsonwebtoken')
 
 const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenPass = process.env.REFRESH_TOKEN_SECRET;
-const PORT = process.env.AUTHPORT || 4000
+const PORT = process.env.AUTHPORT || 3001
 
 const conn = mysql.createPool({
   connectionLimit: 10, // Adjust as necessary
