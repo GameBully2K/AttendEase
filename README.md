@@ -25,17 +25,21 @@ Attendora is an attendance tracking system designed to streamline and automate t
 ### Installation
 
 1. Clone the repository: 
+```javascript
 git clone https://github.com/GameBully2K/attendora-api
+```
 2. Navigate to the project directory and install dependencies:
+```javascript
 npm install
+```
 3. Set up your environment variables in a `.env` file. This should include your MySQL database credentials and JWT secret keys.
 4. Ensure your MySQL database is running and properly configured according to the schema used by Attendora.
 
 ### Running the API
 
 To start the API server, run:
-npm start for production
-npm run dev for developement
+`npm start` for production
+`npm run dev` for developement
 
 
 ## API Endpoints
