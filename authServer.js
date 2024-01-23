@@ -32,7 +32,7 @@ app.listen(
 );
 
 app.get('/', (req, res) => {
-  res.send(<h1>Auth Server working</h1>)
+  res.send("<h1>Auth Server working</h1>")
 })
 
 
