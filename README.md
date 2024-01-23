@@ -1,67 +1,63 @@
+<!DOCTYPE html>
+<html>
 <head>
   <title>Attendora API Documentation</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      color: #333;
+      background-color: #f4f4f4;
+      color: #333333;
       margin: 0;
       padding: 20px;
     }
-    h1, h3 {
-      color: #27465B;
+
+    h1, h2, h3 {
+      color: #2E86C1;
     }
-    h2 {
-      color: #D0E5EE;
-    }
+
     ul, ol {
       margin-left: 20px;
     }
+
     code {
       background-color: #eee;
       padding: 2px 4px;
       font-family: monospace;
       border-radius: 4px;
     }
+
     a {
-      color: #27465B;
+      color: #2E86C1;
       text-decoration: none;
     }
+
     a:hover {
       text-decoration: underline;
     }
+
     .container {
       max-width: 700px;
       margin: auto;
+      background-color: #ffffff;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
+
     .logo {
       text-align: center;
       margin-bottom: 20px;
     }
+
     .logo img {
       max-width: 100px;
     }
+
     footer {
       text-align: center;
       margin-top: 20px;
       font-size: 0.8em;
       color: #777;
-    }
-    .header {
-      background-color: #D0E5EE;
-      color: white;
-      padding: 10px;
-      text-align: center;
-      border-radius: 8px 8px 0 0;
-    }
-    .footer {
-      background-color: #27465B;
-      color: white;
-      padding: 10px;
-      text-align: center;
-      border-radius: 0 0 8px 8px;
     }
   </style>
 </head>
