@@ -7,7 +7,11 @@ const bcrypt = require('bcrypt')
 const express = require('express')
 const { access } = require('fs')
 const app = express()
+const fs = require('fs');
 const jwt = require('jsonwebtoken')
+
+const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
+const refreshTokenPass = process.env.REFRESH_TOKEN_SECRET;
 const PORT = process.env.AUTHPORT || 4000
 
 const conn = mysql.createPool({
@@ -32,7 +36,10 @@ app.listen(
 );
 
 app.get('/', (req, res) => {
-  res.send("<h1>Auth Server working</h1>")
+  res.send({
+    "message": "Auth server is running",
+    "status": "ok"
+  })
 })
 
 
@@ -42,7 +49,7 @@ app.post('/token', (req, res) => {
   const refreshToken = req.body.token
   if (refreshToken == null) return res.sendStatus(401)
   if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+  jwt.verify(refreshToken, refreshTokenPass, (err, user) => {
     if (err) return res.sendStatus(403)
     const accessToken = generateAccessToken({ name: user.name })
     res.json({ accessToken: accessToken })
@@ -78,7 +85,7 @@ app.post('/login', async (req, res) => {
     try {
       if(await bcrypt.compare(req.body.password, user.password)) {
         const accessToken = generateAccessToken({ name : user.name})
-        const refreshToken = jwt.sign({ name : user.name}, process.env.REFRESH_TOKEN_SECRET)
+        const refreshToken = jwt.sign({ name : user.name}, refreshTokenPass)
         refreshTokens.push(refreshToken) 
         res.json(
           {
@@ -101,7 +108,7 @@ app.post('/users', authenticateToken, (req, res) => {
     })
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3600s' })
+  return jwt.sign(user, accessTokenPass, { expiresIn: '3600s' })
 }
 
 function authenticateToken(req, res, next) {
@@ -109,7 +116,7 @@ function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1]
     if (token == null) return res.sendStatus(401)
   
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token, accessTokenPass, (err, user) => {
       console.log(err)
       if (err) return res.sendStatus(403)
       req.user = user

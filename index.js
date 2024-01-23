@@ -8,7 +8,6 @@ const fs = require('fs');
 const mysql = require('mysql2');
 
 const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
-const refreshToken = process.env.REFRESH_TOKEN_SECRET;
 const PORT = process.env.APIPORT || 3000;
 
 
