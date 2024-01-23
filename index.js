@@ -9,7 +9,7 @@ const mysql = require('mysql2');
 
 const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
 const refreshToken = process.env.REFRESH_TOKEN_SECRET;
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.APIPORT || 3000;
 
 
 //GET TIME

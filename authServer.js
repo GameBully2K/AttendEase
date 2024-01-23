@@ -1,16 +1,36 @@
 require('dotenv').config()
 
+'use strict';
+const mysql = require('mysql2');
+
 const bcrypt = require('bcrypt')
 const express = require('express')
 const { access } = require('fs')
 const app = express()
 const jwt = require('jsonwebtoken')
+const PORT = process.env.AUTHPORT || 4000
+
+const conn = mysql.createPool({
+  connectionLimit: 10, // Adjust as necessary
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  ssl: {
+    key: fs.readFileSync(process.env.DB_SSL_KEY),
+    cert: fs.readFileSync(process.env.DB_SSL_CERT),
+    ca: fs.readFileSync(process.env.DB_SSL_CA)
+  }
+},
+console.log("Connected to database"));
 
 app.use(express.json())
+app.listen(
+  PORT,
+  () => console.log("AUTH is Runnig on port " + PORT + " ...)
+);
 
-let users = [
-    {"name":"Bilal","password":"$2b$10$HCKQ1xNtXB2Xw.8xSoPedeU2HaTdjCXWITryUaHOp82r1JQKuvgrC"},
-    {"name":"pipo","password":"$2b$10$YwEBk.uzwz5V/aBvsmYRV.vUtYZ2.lV/D5UC3OZw86NB92NMqMI8W"}];
 
 let refreshTokens = []
 
