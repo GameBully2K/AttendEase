@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "auth": "node authServer.js",
     "dev": "nodemon index.js",
-    "auth": "nodemon authServer.js",
+    "authdev": "nodemon authServer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
