@@ -28,8 +28,12 @@ console.log("Connected to database"));
 app.use(express.json())
 app.listen(
   PORT,
-  () => console.log("AUTH is Runnig on port " + PORT + " ...)
+  () => console.log("AUTH is Runnig on port " + PORT + "")
 );
+
+app.get('/', (req, res) => {
+  res.send(<h1>Auth Server working</h1>)
+})
 
 
 let refreshTokens = []
