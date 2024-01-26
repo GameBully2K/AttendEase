@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "An RFID based presence monitoring software boosted with AI",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "auth": "node authServer.js",
