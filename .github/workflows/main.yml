@@ -27,6 +27,7 @@ jobs:
           cd /home/github/attendora-api
           git pull origin main
           git status
+          npm i
           nohup npm start > /dev/null 2>&1 &
           nohup npm run auth > /dev/null 2>&1 &
 
