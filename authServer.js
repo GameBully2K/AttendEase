@@ -1,15 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
+import crypto from 'crypto';
 
 'use strict';
 import mysql from 'mysql2';
-
-//email API
-// import SibApiV3Sdk from 'sib-api-v3-sdk';
-// const defaultClient = SibApiV3Sdk.ApiClient.instance;
-// const apiKey = defaultClient.authentications['api-key'];
-// apiKey.apiKey = process.env.EMAIL_API_KEY;
-// const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 
 import bcrypt from 'bcrypt';
@@ -19,6 +13,7 @@ import fs from 'fs';
 import jwt from 'jsonwebtoken';
 
 import { authenticateToken, generateAccessToken } from './src/methods/auth/token.js';
+import { sendVerificationEmail } from './src/methods/email/emailing.js';
 
 const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenPass = process.env.REFRESH_TOKEN_SECRET;
@@ -39,6 +34,7 @@ const conn = mysql.createPool({
 },
 console.log("Connected to database"));
 let refreshTokens = [];
+let emailVerificationCode = new Map(); 
 
 app.use(express.json());
 app.use((req, res, next) => {
@@ -72,9 +68,36 @@ app.post('/token', (req, res) => {
   });
 });
 
+app.post('/sendverifEmail', async (req, res) => {
+  console.log("calling verifyEmail...");
+  try {
+    const code = crypto.randomUUID().substring(0, 6).toUpperCase();
+    console.log(code);
+    emailVerificationCode.set(req.body.teacherEmail, [code.toString(), Date.now()]);
+    await sendVerificationEmail(req.body.teacherEmail, code);
+    console.log(emailVerificationCode.get(req.body.teacherEmail));
+    res.status(200).send(
+      {
+        "code": code
+      }
+    );
+    console.log("verifyEmail called successfully ✅");
+  } catch (err) {
+    res.status(500).send();
+    console.log(err);
+  }
+});
+
 app.post('/signup', async (req, res) => {
   try {
     console.log("calling signup...");
+    if (emailVerificationCode.get(req.body.teacherEmail) == null) {
+      return res.status(404).send('no code found');
+    }
+    console.log(Date.now() - emailVerificationCode.get(req.body.teacherEmail)[1]);
+    if (emailVerificationCode.get(req.body.teacherEmail)[0] != req.body.code || Date.now() - emailVerificationCode.get(req.body.teacherEmail)[1]> 600000 ){
+      return res.status(401).send('wrong or expired code');
+    }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const insert = await conn.promise().query('INSERT INTO Enseignants (Nom_E,Prenom_E,Email_E,Pass_E,NumRFID)VALUES ("'+ req.body.teacherLastName +'", "'+req.body.teacherName+'", "'+req.body.teacherEmail+'", "'+hashedPassword+'", "'+req.body.rfid+'")');
     if(insert[0].affectedRows == 0) {
@@ -92,7 +115,7 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-app.post('/logout', (req, res) => {
+app.post('/logout', authenticateToken, (req, res) => {
   console.log("calling logout...");
   if (refreshTokens.length == 0) return res.status(200).send("clean refresh tokens");
   if (req.body.rftoken == null) return res.status(404).send("no refresh token provided");

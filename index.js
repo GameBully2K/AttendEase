@@ -5,6 +5,8 @@ import https from 'https';
 import fs from 'fs';
 import mysql from 'mysql2';
 
+import { authenticateToken } from './src/methods/auth/token.js';
+
 dotenv.config();
 
 const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
@@ -232,23 +234,6 @@ app.post('/studentcount', authenticateToken, async (req, res) => {
     console.log(err);
   }
 });
-
-function authenticateToken(req, res, next) {
-  // const authHeader = req.headers['authorization']
-  // const token = authHeader && authHeader.split(' ')[1]
-  const token = req.body.token;
-
-  jwt.verify(token, accessTokenPass, (err, user) => {
-    if (err) {
-      if (err.name === 'TokenExpiredError') {
-        return res.status(401).send('Token expired');
-      }
-      return res.sendStatus(403);
-    }
-    req.user = user;
-    next();
-  });
-}
 
 async function determineEmploi(teacherId) {
   let weekday = getDay();
