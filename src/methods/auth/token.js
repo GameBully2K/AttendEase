@@ -22,5 +22,5 @@ export function authenticateToken(req, res, next) {
 }
 
 export function generateAccessToken(user) {
-    return jwt.sign(user, accessTokenPass, { expiresIn: '20s' })
+    return jwt.sign(user, accessTokenPass, { expiresIn: '15m' })
 }
