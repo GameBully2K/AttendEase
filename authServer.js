@@ -56,17 +56,28 @@ app.get('/', (req, res) => {
     "status": "ok"
   });
 });
+app.post('/expiry', authenticateToken, (req, res) => {
+  res.sendStatus(200);
+});
 
 app.post('/token', (req, res) => {
+  console.log("calling token...");
   const refreshToken = req.body.rftoken;
   if (refreshToken == null) return res.sendStatus(401);
-  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(404);
   jwt.verify(refreshToken, refreshTokenPass, (err, user) => {
-    if (err) return res.sendStatus(403);
-    const accessToken = generateAccessToken({ name: user.name });
-    res.json({ accessToken: accessToken });
+    if (err) return res.status(403).send(err);
+    delete user.iat;
+    delete user.exp;
+    const accessToken = generateAccessToken(user);
+    res.status(200).send({
+      "accessToken": accessToken
+    });
+    console.log("token called successfully ✅");
   });
 });
+
+
 
 app.post('/sendverifEmail', async (req, res) => {
   console.log("calling verifyEmail...");
