@@ -21,7 +21,7 @@ export async function sendVerificationEmail(email, code) {
 
     try {
         let data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+        console.log('Email sent Succesfully');
     } catch (error) {
         console.error(error);
     }

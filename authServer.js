@@ -4,6 +4,7 @@ import crypto from 'crypto';
 
 'use strict';
 import mysql from 'mysql2';
+import { createClient } from 'redis';
 
 
 import bcrypt from 'bcrypt';
@@ -14,6 +15,8 @@ import jwt from 'jsonwebtoken';
 
 import { authenticateToken, generateAccessToken } from './src/methods/auth/token.js';
 import { sendVerificationEmail } from './src/methods/email/emailing.js';
+import { Console } from 'console';
+import e from 'express';
 
 const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenPass = process.env.REFRESH_TOKEN_SECRET;
@@ -33,8 +36,18 @@ const conn = mysql.createPool({
   }
 },
 console.log("Connected to database"));
-let refreshTokens = [];
-let emailVerificationCode = new Map(); 
+const redisClient = await createClient({
+  password: process.env.REDIS_PASS,
+  socket: {
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT
+  }
+})
+.on('error', err => console.log('Redis Client Error', err))
+.connect(console.log("Connected to redis"));
+
+// let refreshTokens = [];
+// let emailVerificationCode = new Map();
 
 app.use(express.json());
 app.use((req, res, next) => {
@@ -57,14 +70,19 @@ app.get('/', (req, res) => {
   });
 });
 app.post('/expiry', authenticateToken, (req, res) => {
+  console.log("calling expiry...");
   res.sendStatus(200);
+  console.log("expiry called successfully ✅");
 });
 
-app.post('/token', (req, res) => {
+app.post('/token', async (req, res)  => {
   console.log("calling token...");
   const refreshToken = req.body.rftoken;
   if (refreshToken == null) return res.sendStatus(401);
-  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(404);
+  // if (!refreshTokens.includes(refreshToken)) return res.sendStatus(404);
+  // const token = await redisClient.get(req.body.user.id);
+  // if (token) return res.sendStatus(404);
+  if (!await redisClient.exists(req.body.teacherId)) return res.sendStatus(404);
   jwt.verify(refreshToken, refreshTokenPass, (err, user) => {
     if (err) return res.status(403).send(err);
     delete user.iat;
@@ -84,14 +102,9 @@ app.post('/sendverifEmail', async (req, res) => {
   try {
     const code = crypto.randomUUID().substring(0, 6).toUpperCase();
     console.log(code);
-    emailVerificationCode.set(req.body.teacherEmail, [code.toString(), Date.now()]);
+    await redisClient.set(req.body.teacherEmail.toString(), code.toString(), 'EX', 60 * 10); // 10 minutes in seconds
     await sendVerificationEmail(req.body.teacherEmail, code);
-    console.log(emailVerificationCode.get(req.body.teacherEmail));
-    res.status(200).send(
-      {
-        "code": code
-      }
-    );
+    res.sendStatus(200);
     console.log("verifyEmail called successfully ✅");
   } catch (err) {
     res.status(500).send();
@@ -102,12 +115,12 @@ app.post('/sendverifEmail', async (req, res) => {
 app.post('/signup', async (req, res) => {
   try {
     console.log("calling signup...");
-    if (emailVerificationCode.get(req.body.teacherEmail) == null) {
-      return res.status(404).send('no code found');
+    if (req.body.code == null) return res.status(403).send("no code provided");
+    if (!await redisClient.exists(req.body.teacherEmail)){
+      return res.status(404).send('wrong or expired code');
     }
-    console.log(Date.now() - emailVerificationCode.get(req.body.teacherEmail)[1]);
-    if (emailVerificationCode.get(req.body.teacherEmail)[0] != req.body.code || Date.now() - emailVerificationCode.get(req.body.teacherEmail)[1]> 600000 ){
-      return res.status(401).send('wrong or expired code');
+    if (req.body.code != await redisClient.get(req.body.teacherEmail)){
+      return res.status(404).send('wrong code');
     }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const insert = await conn.promise().query('INSERT INTO Enseignants (Nom_E,Prenom_E,Email_E,Pass_E,NumRFID)VALUES ("'+ req.body.teacherLastName +'", "'+req.body.teacherName+'", "'+req.body.teacherEmail+'", "'+hashedPassword+'", "'+req.body.rfid+'")');
@@ -126,13 +139,13 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-app.post('/logout', authenticateToken, (req, res) => {
+app.post('/logout', authenticateToken, async (req, res) => {
   console.log("calling logout...");
-  if (refreshTokens.length == 0) return res.status(200).send("clean refresh tokens");
   if (req.body.rftoken == null) return res.status(404).send("no refresh token provided");
-  refreshTokens = refreshTokens.filter(token => token !== req.body.rftoken);
+  // refreshTokens = refreshTokens.filter(token => token !== req.body.rftoken);
+  await redisClient.del(req.user.id.toString());
   res.status(204).send();
-  console.log(refreshTokens);
+  // console.log(refreshTokens);
   console.log("logout called successfully ✅");
 });
 
@@ -158,8 +171,9 @@ app.post('/login', async (req, res) => {
       if(await bcrypt.compare(req.body.password,password  )) {
         const accessToken = generateAccessToken(user);
         const refreshToken = jwt.sign(user, refreshTokenPass);
-        refreshTokens.push(refreshToken);
-        console.log(refreshTokens);
+        //refreshTokens.push(refreshToken);
+        await redisClient.set(user.id.toString(), refreshToken.toString(), 'EX', 60 * 60 * 24 * 30); // 30 days in seconds
+        // console.log(refreshTokens);
         res.status(200).send(
           {
             "accessToken": accessToken,

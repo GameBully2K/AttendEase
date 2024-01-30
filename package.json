@@ -37,6 +37,7 @@
     "https": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.3",
+    "redis": "^4.6.12",
     "sib-api-v3-sdk": "^8.5.0"
   },
   "devDependencies": {
