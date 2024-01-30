@@ -70,15 +70,14 @@ app.get('/', (req, res) => {
   });
 });
 app.post('/expiry', authenticateToken, (req, res) => {
-  console.log("calling expiry...");
   res.sendStatus(200);
   console.log("expiry called successfully ✅");
 });
 
 app.post('/token', async (req, res)  => {
   console.log("calling token...");
+  if (req.body.rftoken == null) return res.sendStatus(401);
   const refreshToken = req.body.rftoken;
-  if (refreshToken == null) return res.sendStatus(401);
   // if (!refreshTokens.includes(refreshToken)) return res.sendStatus(404);
   // const token = await redisClient.get(req.body.user.id);
   // if (token) return res.sendStatus(404);
@@ -172,7 +171,8 @@ app.post('/login', async (req, res) => {
         const accessToken = generateAccessToken(user);
         const refreshToken = jwt.sign(user, refreshTokenPass);
         //refreshTokens.push(refreshToken);
-        await redisClient.set(user.id.toString(), refreshToken.toString(), 'EX', 60 * 60 * 24 * 30); // 30 days in seconds
+        await redisClient.set(user.id.toString(), refreshToken.toString()); // 30 days in seconds
+        await redisClient.expire(user.id.toString(),  24*60*60); // 1 day in seconds
         // console.log(refreshTokens);
         res.status(200).send(
           {
