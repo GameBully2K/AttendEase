@@ -102,7 +102,7 @@ app.post('/sendverifEmail', async (req, res) => {
   try {
     const code = crypto.randomUUID().substring(0, 6).toUpperCase();
     await redisClient.set(req.body.teacherEmail.toString(), code.toString());
-    await redisClient.expire(req.body.teacherEmail.toString(),  10); // 10 minutes in seconds
+    await redisClient.expire(req.body.teacherEmail.toString(),  10*60); // 10 minutes in seconds
     await sendVerificationEmail(req.body.teacherEmail, code);
     res.sendStatus(200);
     console.log("verifyEmail called successfully ✅");
