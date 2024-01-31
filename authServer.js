@@ -121,6 +121,7 @@ app.post('/signup', async (req, res) => {
     if (req.body.code != await redisClient.get(req.body.teacherEmail)){
       return res.status(404).send('wrong code');
     }
+    await redisClient.del(req.body.teacherEmail);
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const insert = await conn.promise().query('INSERT INTO Enseignants (Nom_E,Prenom_E,Email_E,Pass_E,NumRFID)VALUES ("'+ req.body.teacherLastName +'", "'+req.body.teacherName+'", "'+req.body.teacherEmail+'", "'+hashedPassword+'", "'+req.body.rfid+'")');
     if(insert[0].affectedRows == 0) {
