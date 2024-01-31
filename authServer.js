@@ -4,8 +4,7 @@ import crypto from 'crypto';
 
 'use strict';
 import mysql from 'mysql2';
-import { createClient } from 'redis';
-
+import { redisClient } from './src/methods/storage/redis.js';
 
 import bcrypt from 'bcrypt';
 import express from 'express';
@@ -36,15 +35,7 @@ const conn = mysql.createPool({
   }
 },
 console.log("Connected to database"));
-const redisClient = await createClient({
-  password: process.env.REDIS_PASS,
-  socket: {
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT
-  }
-})
-.on('error', err => console.log('Redis Client Error', err))
-.connect(console.log("Connected to redis"));
+
 
 // let refreshTokens = [];
 // let emailVerificationCode = new Map();
