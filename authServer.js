@@ -182,3 +182,49 @@ app.post('/login', async (req, res) => {
     }
   
   });
+
+app.post('/resetPasswordEmail', async (req, res) => {
+  console.log("calling forgotPassword...");
+  try {
+    const code = crypto.randomUUID().substring(0, 6).toUpperCase();
+    let result = await conn.promise().query('SELECT * FROM Enseignants WHERE Email_E = "'+req.body.teacherEmail+'"');
+    if(result[0].length == 0) {
+      return res.status(404).send('not registered');
+    }
+    await redisClient.set(req.body.teacherEmail.toString(), code.toString());
+    await redisClient.expire(req.body.teacherEmail.toString(),  10*60); // 10 minutes in seconds
+    //await sendVerificationEmail(req.body.teacherEmail, code);
+    //res.sendStatus(200);
+    res.status(200).send({
+      "code": code
+    })
+    console.log("forgotPassword called successfully ✅");
+  } catch (err) {
+    res.status(500).send();
+    console.log(err);
+  }
+});
+
+app.post('/resetPassword', async (req, res) => {
+  console.log("calling forgotPassword...");
+  try {
+    if (req.body.code == null) return res.status(403).send("no code provided");
+    if (!await redisClient.exists(req.body.teacherEmail)){
+      return res.status(404).send('expired code');
+    }
+    if (req.body.code != await redisClient.get(req.body.teacherEmail)){
+      return res.status(404).send('wrong code');
+    }
+    await redisClient.del(req.body.teacherEmail);
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const update = await conn.promise().query('UPDATE Enseignants SET Pass_E = "'+hashedPassword+'" WHERE Email_E = "'+req.body.teacherEmail+'"');
+    if(update[0].affectedRows == 0) {
+      return res.status(400).send('Cannot update password');
+    }
+    res.status(200).send();
+    console.log("forgotPassword called successfully ✅");
+  } catch (err) {
+    res.status(500).send();
+    console.log(err);
+  }
+});

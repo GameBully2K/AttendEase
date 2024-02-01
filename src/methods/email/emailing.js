@@ -26,4 +26,3 @@ export async function sendVerificationEmail(email, code) {
         console.error(error);
     }
 }
-
