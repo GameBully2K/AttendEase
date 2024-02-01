@@ -193,11 +193,11 @@ app.post('/resetPasswordEmail', async (req, res) => {
     }
     await redisClient.set(req.body.teacherEmail.toString(), code.toString());
     await redisClient.expire(req.body.teacherEmail.toString(),  10*60); // 10 minutes in seconds
-    //await sendVerificationEmail(req.body.teacherEmail, code);
-    //res.sendStatus(200);
-    res.status(200).send({
-      "code": code
-    })
+    await sendVerificationEmail(req.body.teacherEmail, code);
+    res.sendStatus(200);
+    // res.status(200).send({
+    //   "code": code
+    // })
     console.log("forgotPassword called successfully ✅");
   } catch (err) {
     res.status(500).send();
