@@ -102,12 +102,11 @@ app.post('/createSession', async (req, res) => {
   let arduinoId = req.body.arduinoId;
   let teacherId = req.body.teacherId;
   arduinoId = await conn.promise().query('select salle from Arduino where Numero = ' + arduinoId + ' AND Active = 1');
-  salle = arduinoId[0][0].salle;
+  const salle = arduinoId[0][0].salle;
   teacherId = await conn.promise().query('select * from Enseignants where NumRFID = "' + teacherId + '"');
-  teacherName = teacherId[0][0].Nom_E;
+  const teacherName = teacherId[0][0].Nom_E;
   teacherId = teacherId[0][0].ID_ens;
   let emploiId = await determineEmploi(teacherId);
-  emploiId++;
   let result = await conn.promise().query('INSERT INTO Seance (Type, Emploi, Enseignant, Salle) VALUES ("Normal", ' + teacherId + ', ' + emploiId + ', "' + salle + '")');
   let elementName = await conn.promise().query('Select * from Emploi where ID_emp = ' + emploiId + '');
   let filiereName = elementName[0][0].filiere;
@@ -236,20 +235,21 @@ app.post('/studentcount', authenticateToken, async (req, res) => {
 });
 
 async function determineEmploi(teacherId) {
-  let weekday = getDay();
+  const weekday = getDay();
   let result = await conn.promise().query('Select * from Emploi where Enseignant = ' + teacherId + ' AND Jour = "Vendredi"');//"'+weekday+'"
-  let res = result[0];
-  hours = [];
-  for (let i = 0; i < res.length; i++) {
-    res[i].HeureDebut = res[i].HeureDebut.split(":");
-    hours.push(parseInt(res[i].HeureDebut[0]));
+  result = result[0];
+  let hours = [];
+  for (let i = 0; i < result.length; i++) {
+    result[i].HeureDebut = result[i].HeureDebut.split(":");
+    hours.push(parseInt(result[i].HeureDebut[0]));
   }
-  //time = parseFloat(getHours()+"."+getMinutes());
-  //console.log(time)
-  time = 7.8;
+//   const time = parseFloat(getHours()+"."
+//   +((getMinutes()*100)/60)
+// );;
+//   console.log(time)
+  const time = 7.8;
   for (let i = 0; i < hours.length; i++) {
     hours[i] = Math.abs(hours[i] - time);
   }
-  return hours.indexOf(Math.min(...hours));
+  return hours.indexOf(Math.min(...hours))+1;
 }
-
