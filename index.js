@@ -73,6 +73,17 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/testdb', async (req, res) => {
+  try {
+    console.log("calling testdb...");
+    const result = await conn.promise().query('SELECT * FROM Etudiant');
+    res.status(200).send(result[0]);
+    console.log("testdb Called: status ok ✅");
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 app.post('/getstudents', async (req, res) => {
   try {
     console.log("calling getstudents...");
