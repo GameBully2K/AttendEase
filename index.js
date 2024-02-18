@@ -1,9 +1,10 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import jwt from 'jsonwebtoken';
 import https from 'https';
 import fs from 'fs';
-import mysql from 'mysql2';
+import conn from './src/methods/db/db.js';
+
+import dashboard from './src/routes/dashboard/dashboard.js';
 
 import { authenticateToken } from './src/methods/auth/token.js';
 
@@ -32,25 +33,7 @@ function getDay() {
 // Database connection
 //----------------------------------------------
 
-const conn = mysql.createPool({
-  connectionLimit: 10, // Adjust as necessary
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-  ssl: {
-    key: fs.readFileSync(process.env.DB_SSL_KEY),
-    cert: fs.readFileSync(process.env.DB_SSL_CERT),
-    ca: fs.readFileSync(process.env.DB_SSL_CA),
-  },
-});
-console.log("Connected to database");
 
-const options = {
-  key: fs.readFileSync('./certs/localhost.key'),
-  cert: fs.readFileSync('./certs/localhost.pem'),
-};
 
 const app = express();
 app.use(express.json());
@@ -60,7 +43,15 @@ app.use((req, res, next) => {
   next();
 });
 
-const server = https.createServer(options, app);
+//define Routes
+app.use('/dashboard', dashboard);
+
+
+const sslOptions = {
+  key: fs.readFileSync('./certs/localhost.key'),
+  cert: fs.readFileSync('./certs/localhost.pem'),
+};
+const server = https.createServer(sslOptions, app);
 
 app.listen(PORT, () => console.log("API is Runnig"));
 

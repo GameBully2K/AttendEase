@@ -55,7 +55,4 @@ function getYearToDateDays() {
   return {yearToDateDays, dateArray};
 }
 
-const {yearToDateDays, dateArray} = getYearToDateDays();
-// console.log(yearToDateDays);
-console.log(new Date(yearToDateDays[0]).getDate());
-// console.log(dateArray);
+export { getYearToDateDays };

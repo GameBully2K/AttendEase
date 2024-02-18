@@ -14,8 +14,6 @@ import jwt from 'jsonwebtoken';
 
 import { authenticateToken, generateAccessToken } from './src/methods/auth/token.js';
 import { sendVerificationEmail } from './src/methods/email/emailing.js';
-import { Console } from 'console';
-import e from 'express';
 
 const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenPass = process.env.REFRESH_TOKEN_SECRET;
