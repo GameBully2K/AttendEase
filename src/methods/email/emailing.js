@@ -3,7 +3,6 @@ import SibApiV3Sdk from 'sib-api-v3-sdk';
 
 export async function sendVerificationEmail(email, code) {
     let defaultClient = SibApiV3Sdk.ApiClient.instance;
-
     // Configure API key authorization
     let apiKey = defaultClient.authentications['api-key'];
     apiKey.apiKey = process.env.EMAIL_API_KEY;

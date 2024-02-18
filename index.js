@@ -76,7 +76,7 @@ app.get('/', (req, res) => {
 app.get('/testdb', async (req, res) => {
   try {
     console.log("calling testdb...");
-    const result = await conn.promise().query('SELECT * FROM Etudiant');
+    const result = await conn.promise().query('SELECT * FROM Etudiant Where Filiere ='+ req.filiere);
     res.status(200).send(result[0]);
     console.log("testdb Called: status ok ✅");
   } catch (err) {
@@ -208,7 +208,7 @@ app.post('/filierecount', authenticateToken, async (req, res) => {
   try {
     console.log("calling filierecount...");
     const teacherId = req.body.teacherId;
-    const result = await conn.promise().query('SELECT DISTINCT COUNT(filiere) AS count FROM Emploi WHERE Enseignant = "' + teacherId + '"');
+    const result = await conn.promise().query('SELECT COUNT(*) AS count FROM Filiere');
     res.status(200).send(
       { count: result[0][0].count }
     );
@@ -235,7 +235,7 @@ app.post('/studentcount', authenticateToken, async (req, res) => {
     }
     filarray = filarray.slice(0, -1);
     filarray += ")";
-    const studentCount = await conn.promise().query('SELECT COUNT(*) AS count FROM Etudiant WHERE filiere in ' + filarray + '');
+    const studentCount = await conn.promise().query('SELECT COUNT(*) AS count FROM Etudiant');
     res.status(200).send(
       { count: studentCount[0][0].count }
     );
