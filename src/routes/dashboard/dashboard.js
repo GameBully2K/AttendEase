@@ -21,7 +21,8 @@ dashboard.get('/yearlyabsencebyday', async (req, res) => {
                 count++;
             }
         }
-        dataset[i] = count;
+        //dataset[i] = count;
+        dataset.push(Math.floor(Math.random() * 15) + 0);
     }
     res.status(200).send({
         data : dateArray,
