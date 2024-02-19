@@ -14,7 +14,7 @@ dashboard.get('/yearlyabsencebyday', async (req, res) => {
         let count = 0;
         for (let j = 0; j < query[0].length; j++) {
             let date = new Date(query[0][j].date);
-            date = date.getTime() + 86400*1000;
+            date = date.getTime() + 2*86400*1000;
             date = new Date(date);
             date = date.toISOString().split('T')[0];
             if (yearToDateDays[i] === date) {
