@@ -1,17 +1,17 @@
 import dotenv from 'dotenv';
-import express from 'express';
-import https from 'https';
-import fs from 'fs';
+// import express from 'express';
+// import https from 'https';
+// import fs from 'fs';
+//import { io } from './src/methods/communication/socket.io.js';
+import {app} from './src/methods/communication/api.express.js';
 import conn from './src/methods/db/db.js';
-
 import dashboard from './src/routes/dashboard/dashboard.js';
+//import dashboard from './src/routes/dashboard/dashboard.js';
 
 import { authenticateToken } from './src/methods/auth/token.js';
 
-dotenv.config();
+app.use('/dashboard', dashboard);
 
-const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
-const PORT = process.env.APIPORT || 3000;
 
 //GET TIME
 function getHours() {
@@ -35,25 +35,7 @@ function getDay() {
 
 
 
-const app = express();
-app.use(express.json());
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
 
-//define Routes
-app.use('/dashboard', dashboard);
-
-
-const sslOptions = {
-  key: fs.readFileSync('./certs/localhost.key'),
-  cert: fs.readFileSync('./certs/localhost.pem'),
-};
-const server = https.createServer(sslOptions, app);
-
-app.listen(PORT, () => console.log("API is Runnig"));
 
 app.get('/', (req, res) => {
   res.status(200).send({
