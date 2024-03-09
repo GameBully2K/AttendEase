@@ -1,4 +1,5 @@
-import e from 'express';
+import dotenv from 'dotenv';
+dotenv.config();
 import SibApiV3Sdk from 'sib-api-v3-sdk';
 
 export async function sendVerificationEmail(email, code) {
@@ -19,7 +20,7 @@ export async function sendVerificationEmail(email, code) {
     sendSmtpEmail.to = [{ "email": email }];
 
     try {
-        let data = await apiInstance.sendTransacEmail(sendSmtpEmail);
+        await apiInstance.sendTransacEmail(sendSmtpEmail);
         console.log('Email sent Succesfully');
     } catch (error) {
         console.error(error);
