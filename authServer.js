@@ -26,11 +26,6 @@ const conn = mysql.createPool({
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
-  ssl: {
-    key: fs.readFileSync(process.env.DB_SSL_KEY),
-    cert: fs.readFileSync(process.env.DB_SSL_CERT),
-    ca: fs.readFileSync(process.env.DB_SSL_CA)
-  }
 },
 console.log("Connected to database"));
 
