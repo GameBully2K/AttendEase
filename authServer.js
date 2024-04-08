@@ -50,7 +50,7 @@ app.listen(
 app.get('/', (req, res) => {
   res.send({
     "message": "Auth server is running",
-    "status": "NOT"
+    "status": "OK"
   });
 });
 app.post('/expiry', authenticateToken, (req, res) => {

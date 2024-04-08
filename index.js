@@ -39,7 +39,7 @@ function getDay() {
 
 app.get('/', (req, res) => {
   res.status(200).send({
-    API: "Notworking",
+    API: "working",
     Connection: "Secured",
     Name: "Attendora",
     version: "0.1.1",
