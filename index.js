@@ -237,14 +237,14 @@ app.post('/lastAbsentees', authenticateToken, async (req, res) => {
   try {
     console.log("calling lastAbsentees...");
     const result = await conn.promise().query(`
-      SELECT etudiant.Nom_etd AS surname, etudiant.Prenom_etd AS name, filiere.ID_filiere AS major, element.Abreviation AS element, seance.ID_seance AS id, seance.Date AS date
-      FROM absence
-      INNER JOIN seance ON absence.Seance = seance.ID_seance
-      INNER JOIN etudiant ON absence.Etudiant = etudiant.IDetudiant
-      INNER JOIN emploi ON seance.Emploi = emploi.ID_emp
-      INNER JOIN filiere ON emploi.filiere = filiere.ID_filiere
-      INNER JOIN element ON emploi.Element = Element.ID_elm
-      ORDER BY absence.Seance DESC
+      SELECT Etudiant.Nom_etd AS surname, Etudiant.Prenom_etd AS name, Filiere.ID_filiere AS major, Element.Abreviation AS element, Seance.ID_seance AS id, Seance.Date AS date
+      FROM Absence
+      INNER JOIN Seance ON Absence.Seance = Seance.ID_seance
+      INNER JOIN Etudiant ON Absence.Etudiant = Etudiant.IDetudiant
+      INNER JOIN Emploi ON Seance.Emploi = Emploi.ID_emp
+      INNER JOIN Filiere ON Emploi.filiere = Filiere.ID_filiere
+      INNER JOIN Element ON Emploi.Element = Element.ID_elm
+      ORDER BY Absence.Seance DESC
       LIMIT 5
     `);
     console.log(result[0]);
