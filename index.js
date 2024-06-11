@@ -222,7 +222,7 @@ app.post('/studentcount', authenticateToken, async (req, res) => {
 app.post('/absenceCount', authenticateToken, async (req, res) => {
   try {
     console.log("calling absenceCount...");
-    const result = await conn.promise().query('SELECT COUNT(*) AS count FROM absence');
+    const result = await conn.promise().query('SELECT COUNT(*) AS count FROM Absence');
     console.log(result[0][0].count);
     res.status(200).send(
       { count: result [0][0].count }
