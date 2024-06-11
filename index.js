@@ -110,6 +110,7 @@ app.post('/markAbsent', async (req, res) => {
   try {
     console.log("calling makeAbsent...");
     const absentRFIDs = Object.keys(req.body).filter(key => req.body[key] === 0);
+    console.log(req.body.ip);
 
     // for (let i = 0; i < absentRFIDs.length; i++) {
     //   const studentRFID = absentRFIDs[i];
@@ -213,6 +214,42 @@ app.post('/studentcount', authenticateToken, async (req, res) => {
       { count: studentCount[0][0].count }
     );
     console.log("studentcount Called: status ok ✅");
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post('/absenceCount', authenticateToken, async (req, res) => {
+  try {
+    console.log("calling absenceCount...");
+    const result = await conn.promise().query('SELECT COUNT(*) AS count FROM absence');
+    console.log(result[0][0].count);
+    res.status(200).send(
+      { count: result [0][0].count }
+    );
+    console.log("absenceCount Called: status ok ✅");
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.post('/lastAbsentees', authenticateToken, async (req, res) => {
+  try {
+    console.log("calling lastAbsentees...");
+    const result = await conn.promise().query(`
+      SELECT etudiant.Nom_etd AS surname, etudiant.Prenom_etd AS name, filiere.ID_filiere AS major, element.Abreviation AS element, seance.ID_seance AS id, seance.Date AS date
+      FROM absence
+      INNER JOIN seance ON absence.Seance = seance.ID_seance
+      INNER JOIN etudiant ON absence.Etudiant = etudiant.IDetudiant
+      INNER JOIN emploi ON seance.Emploi = emploi.ID_emp
+      INNER JOIN filiere ON emploi.filiere = filiere.ID_filiere
+      INNER JOIN element ON emploi.Element = Element.ID_elm
+      ORDER BY absence.Seance DESC
+      LIMIT 5
+    `);
+    console.log(result[0]);
+    res.status(200).send(result[0]);
+    console.log("lastAbsentees Called: status ok ✅");
   } catch (err) {
     console.log(err);
   }
