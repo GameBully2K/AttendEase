@@ -14,6 +14,7 @@ import jwt from 'jsonwebtoken';
 
 import { authenticateToken, generateAccessToken } from './src/methods/auth/token.js';
 import { sendVerificationEmail } from './src/methods/email/emailing.js';
+import e from 'express';
 
 const accessTokenPass = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenPass = process.env.REFRESH_TOKEN_SECRET;
@@ -83,11 +84,20 @@ app.post('/token', async (req, res)  => {
 app.post('/sendverifEmail', async (req, res) => {
   console.log("calling verifyEmail...");
   try {
+    let rfid = await conn.promise().query('SELECT NumRFID FROM Enseignants ORDER BY ID_ens DESC LIMIT 1');
     const code = crypto.randomUUID().substring(0, 6).toUpperCase();
     await redisClient.set(req.body.teacherEmail.toString(), code.toString());
     await redisClient.expire(req.body.teacherEmail.toString(),  10*60); // 10 minutes in seconds
     await sendVerificationEmail(req.body.teacherEmail, code);
-    res.sendStatus(200);
+    rfid = parseInt(rfid[0][0].NumRFID)+1
+    rfid = rfid.toString()
+    let negativeLengt = 4-rfid.length
+    for (let i = 0; i < negativeLengt; i++) {
+      rfid = "0" + rfid
+    }
+    res.send({
+      "nextRFID":rfid
+    }).status(200)
     console.log("verifyEmail called successfully ✅");
   } catch (err) {
     res.status(500).send();
